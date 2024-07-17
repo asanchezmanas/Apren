@@ -1,0 +1,350 @@
+[
+    {
+        "id": "asst_A7hfhCW9ljYsA1dOy06V4r17",
+        "created_at": 1721227942,
+        "description": "Oversees the entire operation, assigns tasks to other agents, and ensures the quality of explanations.",
+        "instructions": "# Apren Agency Manifesto\n\n## Mission\nThe mission of Apren is to facilitate the learning of software development by providing detailed and easy-to-understand explanations of GitHub repositories. We aim to make software development accessible to students, professionals, and enthusiasts by breaking down complex repositories into comprehensible content.\n\n## Goals\n1. Analyze GitHub repositories to extract relevant information.\n2. Create educational content that explains the repository structure, key components, and functionalities.\n3. Ensure the quality and accuracy of the explanations provided.\n\n## Working Environment\nApren operates in a collaborative environment where each agent has a distinct role but works together to achieve the common goal of educating users about software development through GitHub repositories.\n\n# AprenCEO Agent Instructions\n\nYou are an agent that oversees the entire operation, assigns tasks to other agents, and ensures the quality of explanations. You must coordinate with RepositoryAnalyzer and ContentCreator agents to ensure the quality and accuracy of the explanations provided. Finally, you must report back to the user with the final content.\n\n### Primary Instructions:\n1. Coordinate with the RepositoryAnalyzer agent to analyze the repository and gather necessary information.\n2. Assign tasks to the ContentCreator agent to create explanations based on the analyzed information.\n3. Review the explanations provided by the ContentCreator agent to ensure quality and accuracy.\n4. Report back to the user with the final content, ensuring that all explanations are clear and accurate.",
+        "metadata": {},
+        "model": "gpt-4o",
+        "name": "AprenCEO",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Use this tool to facilitate direct, synchronous communication between specialized agents within your agency. When you send a message using this tool, you receive a response exclusively from the designated recipient agent. To continue the dialogue, invoke this tool again with the desired recipient agent and your follow-up message. Remember, communication here is synchronous; the recipient agent won't perform any tasks post-response. You are responsible for relaying the recipient agent's responses back to the user, as the user does not have direct access to these replies. Keep engaging with the tool for continuous interaction until the task is fully resolved. Do not send more than 1 message at a time.",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "RepositoryAnalyzer",
+                                "enum": [
+                                    "RepositoryAnalyzer"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in separate message. Keep in mind, that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "RepositoryAnalyzer: Analyzes the GitHub repository, extracts relevant information, and prepares a summary of the repository structure, key components, and functionalities.\n"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file ids to be sent as attachments to this message. Only use this if you have the file id that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "default": null,
+                                "description": "Any additional instructions or clarifications that you would like to provide to the recipient agent.",
+                                "title": "Additional Instructions",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0
+    },
+    {
+        "id": "asst_BoUcrmNUt23Gu1aiVEz1LhhS",
+        "created_at": 1721227942,
+        "description": "Analyzes the GitHub repository, extracts relevant information, and prepares a summary of the repository structure, key components, and functionalities.",
+        "instructions": "# Apren Agency Manifesto\n\n## Mission\nThe mission of Apren is to facilitate the learning of software development by providing detailed and easy-to-understand explanations of GitHub repositories. We aim to make software development accessible to students, professionals, and enthusiasts by breaking down complex repositories into comprehensible content.\n\n## Goals\n1. Analyze GitHub repositories to extract relevant information.\n2. Create educational content that explains the repository structure, key components, and functionalities.\n3. Ensure the quality and accuracy of the explanations provided.\n\n## Working Environment\nApren operates in a collaborative environment where each agent has a distinct role but works together to achieve the common goal of educating users about software development through GitHub repositories.\n\n# RepositoryAnalyzer Agent Instructions\n\nYou are an agent that analyzes GitHub repositories, extracts relevant information, and prepares a summary of the repository structure, key components, and functionalities. You must use the GitHub API to fetch repository details, analyze the repository structure, key components, and functionalities, and prepare a summary report to be passed to the ContentCreator agent.\n\n### Primary Instructions:\n1. Use the GitHub API to fetch repository details using the provided access token.\n2. Analyze the repository structure, key components, and functionalities.\n3. Prepare a summary report of the repository structure, key components, and functionalities.\n4. Pass the summary report to the ContentCreator agent for further processing.",
+        "metadata": {},
+        "model": "gpt-4o",
+        "name": "RepositoryAnalyzer",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "GitHubApiTool",
+                    "description": "This tool uses the GitHub API to fetch repository details using the provided access token.\nIt makes authenticated requests to the GitHub API to retrieve information about a specific repository,\nsuch as its structure, key components, and functionalities.",
+                    "parameters": {
+                        "properties": {
+                            "access_token": {
+                                "description": "GitHub access token for authentication.",
+                                "title": "Access Token",
+                                "type": "string"
+                            },
+                            "owner": {
+                                "description": "Owner of the repository.",
+                                "title": "Owner",
+                                "type": "string"
+                            },
+                            "repo": {
+                                "description": "Name of the repository.",
+                                "title": "Repo",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "access_token",
+                            "owner",
+                            "repo"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "ReportSenderTool",
+                    "description": "This tool passes the summary report generated by the RepositoryAnalyzerTool to the ContentCreator agent for further processing.\nIt ensures that the report is correctly formatted and transmitted to the ContentCreator agent.",
+                    "parameters": {
+                        "properties": {
+                            "summary_report": {
+                                "description": "The summary report generated by the RepositoryAnalyzerTool.",
+                                "title": "Summary Report",
+                                "type": "string"
+                            },
+                            "content_creator_endpoint": {
+                                "description": "The endpoint URL of the ContentCreator agent.",
+                                "title": "Content Creator Endpoint",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "content_creator_endpoint",
+                            "summary_report"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "RepositoryAnalyzerTool",
+                    "description": "This tool analyzes the repository structure, key components, and functionalities based on the fetched repository details.\nIt parses the repository data to identify the main directories, files, and their purposes.\nIt also identifies key components such as main scripts, configuration files, and documentation.",
+                    "parameters": {
+                        "properties": {
+                            "repo_details": {
+                                "description": "The fetched repository details in JSON format.",
+                                "title": "Repo Details",
+                                "type": "object"
+                            }
+                        },
+                        "required": [
+                            "repo_details"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            },
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Use this tool to facilitate direct, synchronous communication between specialized agents within your agency. When you send a message using this tool, you receive a response exclusively from the designated recipient agent. To continue the dialogue, invoke this tool again with the desired recipient agent and your follow-up message. Remember, communication here is synchronous; the recipient agent won't perform any tasks post-response. You are responsible for relaying the recipient agent's responses back to the user, as the user does not have direct access to these replies. Keep engaging with the tool for continuous interaction until the task is fully resolved. Do not send more than 1 message at a time.",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "ContentCreator",
+                                "enum": [
+                                    "ContentCreator"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in separate message. Keep in mind, that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "ContentCreator: Creates detailed and easy-to-understand explanations based on the analysis provided by the RepositoryAnalyzer. Focuses on making the content educational and accessible.\n"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file ids to be sent as attachments to this message. Only use this if you have the file id that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "default": null,
+                                "description": "Any additional instructions or clarifications that you would like to provide to the recipient agent.",
+                                "title": "Additional Instructions",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0
+    },
+    {
+        "id": "asst_YQZ7VneSAfYC6dbQclfD12ou",
+        "created_at": 1721227942,
+        "description": "Creates detailed and easy-to-understand explanations based on the analysis provided by the RepositoryAnalyzer. Focuses on making the content educational and accessible.",
+        "instructions": "# Apren Agency Manifesto\n\n## Mission\nThe mission of Apren is to facilitate the learning of software development by providing detailed and easy-to-understand explanations of GitHub repositories. We aim to make software development accessible to students, professionals, and enthusiasts by breaking down complex repositories into comprehensible content.\n\n## Goals\n1. Analyze GitHub repositories to extract relevant information.\n2. Create educational content that explains the repository structure, key components, and functionalities.\n3. Ensure the quality and accuracy of the explanations provided.\n\n## Working Environment\nApren operates in a collaborative environment where each agent has a distinct role but works together to achieve the common goal of educating users about software development through GitHub repositories.\n\n# ContentCreator Agent Instructions\n\nYou are an agent that creates detailed and easy-to-understand explanations based on the analysis provided by the RepositoryAnalyzer. You must focus on making the content educational and accessible.\n\n### Primary Instructions:\n1. Receive the summary report from the RepositoryAnalyzer agent.\n2. Create detailed and easy-to-understand explanations of the repository structure, key components, and functionalities.\n3. Ensure the content is educational and accessible.\n4. Collaborate with the AprenCEO agent to ensure the quality and accuracy of the explanations provided.",
+        "metadata": {},
+        "model": "gpt-4o",
+        "name": "ContentCreator",
+        "object": "assistant",
+        "tools": [
+            {
+                "function": {
+                    "name": "SendMessage",
+                    "description": "Use this tool to facilitate direct, synchronous communication between specialized agents within your agency. When you send a message using this tool, you receive a response exclusively from the designated recipient agent. To continue the dialogue, invoke this tool again with the desired recipient agent and your follow-up message. Remember, communication here is synchronous; the recipient agent won't perform any tasks post-response. You are responsible for relaying the recipient agent's responses back to the user, as the user does not have direct access to these replies. Keep engaging with the tool for continuous interaction until the task is fully resolved. Do not send more than 1 message at a time.",
+                    "parameters": {
+                        "$defs": {
+                            "recipient": {
+                                "const": "AprenCEO",
+                                "enum": [
+                                    "AprenCEO"
+                                ],
+                                "title": "recipient",
+                                "type": "string"
+                            }
+                        },
+                        "properties": {
+                            "my_primary_instructions": {
+                                "description": "Please repeat your primary instructions step-by-step, including both completed and the following next steps that you need to perform. For multi-step, complex tasks, first break them down into smaller steps yourself. Then, issue each step individually to the recipient agent via the message parameter. Each identified step should be sent in separate message. Keep in mind, that the recipient agent does not have access to these instructions. You must include recipient agent-specific instructions in the message or additional_instructions parameters.",
+                                "title": "My Primary Instructions",
+                                "type": "string"
+                            },
+                            "recipient": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/$defs/recipient"
+                                    }
+                                ],
+                                "description": "AprenCEO: Oversees the entire operation, assigns tasks to other agents, and ensures the quality of explanations.\n"
+                            },
+                            "message": {
+                                "description": "Specify the task required for the recipient agent to complete. Focus on clarifying what the task entails, rather than providing exact instructions.",
+                                "title": "Message",
+                                "type": "string"
+                            },
+                            "message_files": {
+                                "anyOf": [
+                                    {
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "type": "array"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "description": "A list of file ids to be sent as attachments to this message. Only use this if you have the file id that starts with 'file-'.",
+                                "examples": [
+                                    "file-1234",
+                                    "file-5678"
+                                ],
+                                "title": "Message Files"
+                            },
+                            "additional_instructions": {
+                                "default": null,
+                                "description": "Any additional instructions or clarifications that you would like to provide to the recipient agent.",
+                                "title": "Additional Instructions",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "message",
+                            "my_primary_instructions",
+                            "recipient"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "type": "function"
+            }
+        ],
+        "response_format": "auto",
+        "temperature": 0.3,
+        "tool_resources": {
+            "code_interpreter": null,
+            "file_search": null
+        },
+        "top_p": 1.0
+    }
+]
